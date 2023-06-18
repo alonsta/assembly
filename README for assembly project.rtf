@@ -1,23 +1,40 @@
 Procs:
 
-Proc enc_dec- uses the word inside pass to dec/enc the word inside of tempword
-Using xor with the var and (ax)
-
-Proc Getpass - asks the user to input four chars which will be moved to the [pass] variable
-
-Proc openfile - uses the var in filename to open a file from the project directory 
-Proc Note: if you dont use full path the txt file must be in the project directory if you use a relative path
-
-Proc closefile - closes the file in filehandle variable 
-
-Proc enc_dec_memory - uses charcount as the loops amount and enc_dec to loop thru the 
-Buffer and change it according to pass var
-
-Proc readfile - reads the first 1000 characters of the opened message file to the memory buffer called filetomemory
+ProProc readfile - reads the first 5000 characters of the opened message file to the memory buffer called filetomemory and stores the actual amount of chars read in charcount
 
 Proc printfile - uses charcount to print the content of filetomemory buffer
 
-Proc save - check if a file named according to finalfile exist if it does opens it and saves filetomemory buffer into it. Else tries to create a new file with that name and continue
+Proc openfile - uses the var in filename to open a file from the project directory 
+Proc Note: if you dont use the full path the txt file must be in the project directory 
+
+Proc closefile - closes the file in filehandle variable 
+
+enc_dec- uses the word inside pass to enc/dec the word inside of tempword
+Using xor with the var and (ax)
+
+proc enc_dec_memory - uses charcount as the loops amount and enc_dec to loop through the Buffer and change it according to pass var
+
+proc Getpass - asks the user to input two digits which will be moved to the pass variable
+
+Proc printfile - prints the filetomemory buffer
+proc changepass - increases pass by 1(only numbers) (“49“- “50”)
+
+Proc save - check if a file named according to finalfile exists, if it does open it and saves filetomemory buffer into it. Else tries to create a new file with that name and continue
+
+
+proc showfinal - takes finalfile and decrypts it with pass. Then 
+prints it(to check if save is working as intended)
+
+proc brute - my brute-force decryption. The idea is to loop through all of the possible passwords and then save the one which gave the highest amount of English chars
+Using: changepass enc_dec_memory and countenglish
+
+proc countenglish - counts the number of English chars(including spaces) in filetomemory buffer
+
+
+
+
+
+
 
 
 
@@ -27,11 +44,11 @@ Vars:
 
 Pass - stores the value used to enc/dec information with enc_dec(must be 2 numbers)
 
-tempword -  stores the word that you want to dec/enc with enc_dec
+tempword - stores the word that you want to dec/enc with enc_dec
 
 askforpass - stores the message that asks the user for his password to decode or encode
 
-Filename - store the name of your .txt file so readfile and all of the proc’s can acces it later in the code
+Filename - store the name of your .txt file so readfile and all of the proc’s can access it later in the code
 
 Filehandle- saves the status of the opening file interruption
 
@@ -41,7 +58,7 @@ SuccessMsg - if you see this message it means that you can work with the file
 
 Filetomemory - buffer of 1000 bytes that will contain the chars in the file 
 
-Charcount - stores the amount of chars that you read from the file (readfile)
+Charcount - stores the number of chars that you read from the file (readfile)
 
 Finalfile - the name of the file that you want to create/ store your encrypted string inside
 
@@ -51,9 +68,17 @@ Creatingmsg - msg for the user. Used when the program creates a file in the syst
 
 Userchoice - contains the choice of the user when navigating through the program
 
-Invalid - a msg for the user if he enters a wrong number to the program
+Invalid - a msg for the user if he enters a wrong number into the program
 
-Modesmsg - a message for the user. Contains intel on the mods of the program
+Modes - a message for the user. Contains intel on the mods of the program
+
+Bestpass - at the end of brute this var will contain the password that is most likely to be the correct one
+
+Best - used in brute to save the highest amount of english chars ever reached
+
+Englishcounter  - used in countenglish to save theamount of english chars in filetomemory buffer
+
+Returnpoint - just a return point var
 
 
 
@@ -61,28 +86,32 @@ Modesmsg - a message for the user. Contains intel on the mods of the program
 
 
 Interruptions:
-Int 21 - ah,2h \ ah,1h\ah,9h\ah,3fh\ah,3dh\ah,3eh\ah,3ch\ah,40h\ah,41h
-
-
-
-
+Int 21h - ah,2h \ ah,1h\ah,9h\ah,3fh\ah,3dh\ah,3eh\ah,3ch\ah,40h\ah,41h
+Int 15h- ah,86h
+Int 10h - ah,00h
 known limitations/bugs:
-Cant handle files with over 5000 characters or with special chars
+Cant handle files with over 5000 characters
 
-The encoding that the 8086 uses is different from the windows encoding which means that if you enter a password with something other than numbers the meaning of the text will be lost in the transition. Also some apps like(discord) can't show most of these signs so the use of them is limited to .txt files also(can't transfer some of windows symbols like “ ‘ ” which will make the meaning of the word obscure 
+The encoding that the 8086 uses is different from the windows encoding which means that if you enter a password with something other than numbers the meaning of the text will be lost in the transition. Also some apps like(discord) can't show most of these signs so the use of them is limited to .txt files
 
 If a file called msg does not exist the program will make one and shut down. 
 
 TO DO :
 
-Make it so it handles special chars and gives errors - fixed 
+Make it so it handles special chars and gives errors - Done
 
-Add a brute force decrypting function.(maybe with common words or to check the ascii for english characters)
+Add a brute force decrypting function.(check the ascii for english characters) - Done
 
-Add more checks and add notes to the code
+Add more checks and add notes to the code - won't do
 
-Make it so the user can choose what Proc’s to use
+Make it so the user can choose what Proc’s to use-Done
 
-Fix dosbox crashing when creating file - fixed
+Fix dosbox crashing when creating file - Done
 
-Create another way to enc_dec
+Create another way to enc_dec- Done
+
+
+
+
+
+
